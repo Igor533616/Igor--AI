@@ -121,6 +121,18 @@
                 transform: translateY(0);
             }
         }
+        .voice-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 20px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .voice-btn:hover {
+            background-color: #388E3C; /* Darker Green */
+        }
     </style>
 </head>
 <body>
@@ -129,6 +141,9 @@
         <div id="chatbox" class="chatbox"></div>
         <div class="input-area">
             <input id="chatInput" type="text" placeholder="Type your message" />
+            <button id="voiceButton" class="voice-btn">
+                <span class="material-icons">mic</span>
+            </button>
             <button id="sendButton">
                 <span class="material-icons">send</span> Send
             </button>
@@ -137,8 +152,65 @@
 
     <script>
         const sendButton = document.getElementById("sendButton");
+        const voiceButton = document.getElementById("voiceButton");
         const chatInput = document.getElementById('chatInput');
         const chatbox = document.getElementById('chatbox');
+        
+        // Check for speech recognition support
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        let recognition;
+        let isListening = false;
+        
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'ru-RU';
+            
+            // Don't show initial voice support message
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                chatInput.value = transcript;
+                voiceButton.innerHTML = '<span class="material-icons">mic</span>';
+                isListening = false;
+            };
+            
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error', event.error);
+                voiceButton.innerHTML = '<span class="material-icons">mic</span>';
+                isListening = false;
+                
+                let errorMessage = 'Ошибка голосового ввода: ';
+                switch(event.error) {
+                    case 'no-speech':
+                        errorMessage += 'Речь не распознана.';
+                        break;
+                    case 'audio-capture':
+                        errorMessage += 'Микрофон не найден.';
+                        break;
+                    case 'not-allowed':
+                        errorMessage += 'Доступ к микрофону запрещен.';
+                        break;
+                    case 'network':
+                        errorMessage += 'Ошибка сети.';
+                        break;
+                    default:
+                        errorMessage += 'Попробуйте еще раз.';
+                }
+                displayMessage(errorMessage, false);
+            };
+            
+            recognition.onend = () => {
+                if (isListening) {
+                    recognition.start();
+                }
+            };
+        } else {
+            voiceButton.style.display = 'none';
+            console.warn('Speech Recognition not supported');
+            displayMessage('Голосовой ввод не поддерживается вашим браузером.', false);
+        }
 
         async function displayMessage(message, isUser) {
             const msgElem = document.createElement('div');
@@ -173,6 +245,22 @@
         }
 
         chatInput.focus();
+
+        // Voice button click handler
+        if (SpeechRecognition) {
+            voiceButton.addEventListener('click', () => {
+                if (!isListening) {
+                    recognition.start();
+                    voiceButton.innerHTML = '<span class="material-icons">mic_off</span>';
+                    isListening = true;
+                    // Don't show "speak now" message
+                } else {
+                    recognition.stop();
+                    voiceButton.innerHTML = '<span class="material-icons">mic</span>';
+                    isListening = false;
+                }
+            });
+        }
 
         sendButton.addEventListener('click', async () => {
             const message = chatInput.value.trim();
