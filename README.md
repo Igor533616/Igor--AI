@@ -1,4 +1,4 @@
-# Chat Assistant from Игорь
+# Chat Assistant by Игорь
 
 A simple web-based chat assistant built with HTML, CSS, and JavaScript. This application allows users to interact with an AI assistant, send messages, and receive responses in real-time. The assistant can handle both text and image generation requests through a backend API.
 
@@ -40,3 +40,4 @@ Follow & Chat with us:
 - YouTube → https://youtube.com/@You_B_Tech
 - Instagram → https://instagram.com/you_b_tech
 - Wedsite → https://youbtech.xyz
+
