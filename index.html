@@ -20,6 +20,7 @@
             padding: 10px;
             text-align: center;
             font-size: 20px;
+            position: relative;
         }
         .container {
             display: flex;
@@ -134,10 +135,58 @@
         .voice-btn:hover {
             background-color: #388E3C; /* Darker Green */
         }
+        .theme-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            color: #6200EA;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-toggle:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+        .theme-toggle .material-icons {
+            font-size: 20px;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #E8E8E8;
+        }
+        .dark-mode .container {
+            background-color: #1E1E1E;
+        }
+        .dark-mode .chat-message {
+            background-color: #333333;
+        }
+        .dark-mode .input-area {
+            background-color: #2D2D2D;
+        }
+        .dark-mode .input-area input {
+            background-color: #333333;
+            color: white;
+        }
     </style>
 </head>
 <body>
-    <div class="header">Chat Assistant by Игорь</div>
+    <div class="header">
+        Chat Assistant by Игорь
+        <button id="themeToggle" class="theme-toggle">
+            <span class="material-icons">dark_mode</span>
+        </button>
+    </div>
     <div class="container">
         <div id="chatbox" class="chatbox"></div>
         <div class="input-area">
@@ -283,7 +332,25 @@
                 } 
             } catch (error) {
                 console.error('Error:', error);
-displayMessage('An error occurred. Please try again.', false);
-}
-});
-</script>
+                displayMessage('An error occurred. Please try again.', false);
+            }
+        });
+
+        // Темный режим
+        const themeToggle = document.getElementById('themeToggle');
+        const isDarkMode = localStorage.getItem('darkMode') === 'true';
+        
+        if (isDarkMode) {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<span class="material-icons">light_mode</span>';
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const isCurrentlyDark = document.body.classList.contains('dark-mode');
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', !isCurrentlyDark);
+            themeToggle.innerHTML = !isCurrentlyDark ? '<span class="material-icons">light_mode</span>' : '<span class="material-icons">dark_mode</span>';
+        });
+    </script> 
+</body>
+</html>
