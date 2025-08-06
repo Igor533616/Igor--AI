@@ -125,9 +125,7 @@
         .voice-btn {
             padding: 10px;
             border: none;
-
-Игорёk, [04.08.2025 15:41]
-border-radius: 20px;
+            border-radius: 20px;
             background-color: #4CAF50; /* Green */
             color: white;
             cursor: pointer;
@@ -170,8 +168,6 @@ border-radius: 20px;
             recognition.interimResults = false;
             recognition.lang = 'ru-RU';
             
-            // Don't show initial voice support message
-
             recognition.onresult = (event) => {
                 const transcript = event.results[0][0].transcript;
                 chatInput.value = transcript;
@@ -218,20 +214,18 @@ border-radius: 20px;
         async function displayMessage(message, isUser) {
             const msgElem = document.createElement('div');
             msgElem.textContent = message;
-            msgElem.className = chat-message ${isUser ? 'user-message' : 'assistant-message'};
+            msgElem.className = `chat-message ${isUser ? 'user-message' : 'assistant-message'}`;
             chatbox.appendChild(msgElem);
-            chatbox.scrollTop = chatbox.scrollHeight; // Scroll to the bottom
+            chatbox.scrollTop = chatbox.scrollHeight;
             
-            // For assistant messages, add a slight delay before displaying
             if (!isUser) {
-                msgElem.style.opacity = 0; // Start with opacity 0
-                await new Promise(resolve => setTimeout(resolve, 300)); // Delay
-                msgElem.style.opacity = 1; // Fade in
+                msgElem.style.opacity = 0;
+                await new Promise(resolve => setTimeout(resolve, 300));
+                msgElem.style.opacity = 1;
             }
         }
 
-Игорёk, [04.08.2025 15:41]
-async function callApi(apiUrl, prompt) {
+        async function callApi(apiUrl, prompt) {
             chatInput.value = "Typing...";
             chatInput.disabled = true;
             sendButton.disabled = true;
@@ -250,14 +244,12 @@ async function callApi(apiUrl, prompt) {
 
         chatInput.focus();
 
-        // Voice button click handler
         if (SpeechRecognition) {
             voiceButton.addEventListener('click', () => {
                 if (!isListening) {
                     recognition.start();
                     voiceButton.innerHTML = '<span class="material-icons">mic_off</span>';
                     isListening = true;
-                    // Don't show "speak now" message
                 } else {
                     recognition.stop();
                     voiceButton.innerHTML = '<span class="material-icons">mic</span>';
@@ -283,10 +275,13 @@ async function callApi(apiUrl, prompt) {
                     displayMessage(data.text, false);
                 } else {
                     displayMessage('An error occurred. Please try again.', false);
-                } 
+                }
             } catch (error) {
                 console.error('Error:', error);
-displayMessage('An error occurred. Please try again.', false);
-}
-});
-</script>
+                displayMessage('An error occurred. Please try again.', false);
+            }
+        });
+    </script>
+</body>
+</html>
+
